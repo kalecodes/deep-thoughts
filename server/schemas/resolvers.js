@@ -13,6 +13,24 @@ const resolvers = {
             // pass params object (with or without date)  to our .find method
             // return all thought data in descending order
             return Thought.find(params).sort({ createdAt: -1 });
+        },
+        // find a single thought
+        thought: async (parent, { _id }) => {
+            return Thought.findOne({ _id });
+        },
+        // get all users
+        users: async () => {
+            return User.find()
+                .select('-__v -password')
+                .populate('friends')
+                .populate('thoughts');
+        },
+        // get a user by username
+        user: async (parent, { username }) => {
+            return User.findOne({ username })
+                .select('-__v -password')
+                .populate('friends')
+                .populate('thoughts');
         }
     }
 };
