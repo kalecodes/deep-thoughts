@@ -7,6 +7,8 @@ const { typeDefs, resolvers } = require('./schemas');
 const db = require('./config/connection');
 // import authMiddleware
 const { authMiddleware } = require('./utils/auth');
+// import path module 
+const path = require('path');
 
 const PORT = process.env.PORT || 3001;
 const app = express();
@@ -39,6 +41,19 @@ startServer();
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
+
+
+// serve up static assets
+// check to see if Node environment is in production
+if (process.env.NODE_ENV === 'production') {
+  // serve any files in the React applicaiton's 'build' directory 
+  app.use(express.static(path.join(__dirname, '../client/build')));
+}
+// wildcard GET route, to respond with production ready front-end code if a request is made to a route not defined
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../client/build/index.html'));
+});
+
 
 // listen for connection to be made
 // upon successful connection, we start the server
