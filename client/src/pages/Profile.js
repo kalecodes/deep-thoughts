@@ -1,22 +1,31 @@
 import React from 'react';
-import { useParams } from 'react-router-dom';
+import { Redirect, useParams } from 'react-router-dom';
 
 import ThoughtList from '../components/ThoughtList';
 import FriendList from '../components/FriendList';
 
 import { useQuery } from '@apollo/client';
-import { QUERY_USER } from '../utils/queries';
+import { QUERY_USER, QUERY_ME } from '../utils/queries';
+import Auth from '../utils/auth';
 
 const Profile = () => {
   // retrieves username from URL, pass it to useQuery Hook
   const { username: userParam } = useParams();
 
-  const { loading, data } = useQuery(QUERY_USER, {
+  // check value of parameter and conditionally run query based on result
+  // Hook will have a value if its another user's profile and wont if it is ours (comes from URL bar)
+  const { loading, data } = useQuery(userParam ? QUERY_USER : QUERY_ME, {
     variables: { username: userParam }
   });
 
   // user object is created to be used to populare JSX
-  const user = data?.user || {};
+  // handle each type of response from Hook above
+  const user = data?.me || data?.user || {};
+
+  // redirect to personal profile page if username is the logged-in user's
+  if (Auth.loggedIn() && Auth.getProfile().data.username === userParam) {
+    return <Redirect to="/profile" />;
+  }
 
   if (loading) {
     return <div>Loading...</div>;

@@ -57,3 +57,47 @@ export const QUERY_USER = gql`
         }
     }
 `
+
+// queries to retrieve logged in user's data
+export const QUERY_ME = gql`
+    {
+        me {
+            _id
+            username
+            email
+            friendCount
+            thoughts {
+                _id
+                thoughtText
+                createdAt
+                reactionCount
+                reactions {
+                    _id
+                    createdAt
+                    reactionBody
+                    username
+                }
+            friends {
+                _id
+                username 
+            }
+            }
+        }
+    }
+`;
+
+// simpler me query to use for the homepage of the logged in user
+export const QUERY_ME_BASIC = gql `
+    {
+        me {
+            _id
+            username
+            email
+            friendCount
+            friends {
+                _id
+                username
+            }
+        }
+    }
+`;
