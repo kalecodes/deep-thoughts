@@ -87,7 +87,7 @@ export const QUERY_ME = gql`
 `;
 
 // simpler me query to use for the homepage of the logged in user
-export const QUERY_ME_BASIC = gql `
+export const QUERY_ME_BASIC = gql`
     {
         me {
             _id
